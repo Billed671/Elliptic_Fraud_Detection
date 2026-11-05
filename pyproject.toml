@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elliptic-fraud-mvp"
+version = "0.1.0"
+description = "Leakage-aware MVP for illicit Bitcoin transaction detection on the Elliptic temporal graph"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Rustem Gilmetdinov" },
+  { name = "Zamir Safin" },
+  { name = "Denis Beliaev" },
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "scikit-learn>=1.3",
+  "networkx>=3.1",
+  "joblib>=1.3",
+  "torch>=2.1",
+  "torch-geometric>=2.5",
+  "xgboost>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+elliptic-fraud = "elliptic_fraud.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

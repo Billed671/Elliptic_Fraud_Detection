@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite the original Elliptic Bitcoin dataset paper and this repository."
+title: "Elliptic Bitcoin Fraud Detection - MVP v0"
+type: software
+authors:
+  - family-names: Gilmetdinov
+    given-names: Rustem
+  - family-names: Safin
+    given-names: Zamir
+  - family-names: Beliaev
+    given-names: Denis
+version: 0.1.0
+year: 2026
+license: MIT
+abstract: "A temporal, imbalanced Bitcoin transaction classification benchmark with tabular, Node2Vec, and GraphSAGE baselines."
+references:
+  - type: article
+    title: "Anti-Money Laundering in Bitcoin: Experimenting with Graph Convolutional Networks for Financial Forensics"
+    authors:
+      - family-names: Weber
+        given-names: Mark
+    year: 2019
+    url: https://arxiv.org/abs/1908.02591

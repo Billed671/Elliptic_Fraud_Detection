@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.DS_Store
+.idea/
+.vscode/
+
+# Dataset and generated artifacts (do not commit the raw Elliptic data)
+data/raw/
+data/processed/
+outputs/
+*.pt
+*.joblib
+*.npy
