@@ -165,20 +165,6 @@ The fallback is triggered when the best GraphSAGE validation PR-AUC observed dur
 - [ ] Repeat final runs across multiple seeds and report variability (planned after MVP v0).
 - [ ] Add an inductive/streaming evaluation where future topology is unavailable (planned).
 
-## Publish to GitHub
-
-Create an empty repository on GitHub (for example, `elliptic-fraud-mvp`), then run these commands from this project directory:
-
-```bash
-git init -b main
-git add .
-git commit -m "Initial Elliptic fraud detection MVP v0"
-git remote add origin https://github.com/<YOUR-USERNAME>/elliptic-fraud-mvp.git
-git push -u origin main
-```
-
-The `.gitignore` excludes downloaded data, generated model files, embeddings, and experiment outputs by default.
-
 ## Tests
 
 The tests use small synthetic graphs and do not download Elliptic data.
