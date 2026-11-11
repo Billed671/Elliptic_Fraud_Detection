@@ -7,14 +7,11 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import torch
 
-from elliptic_fraud.data import load_elliptic
-from elliptic_fraud.features import build_feature_matrices, build_structural_features, fit_training_scaler
-from elliptic_fraud.models.classical import run_classical_model
-from elliptic_fraud.models.graphsage import run_graphsage
-from elliptic_fraud.models.node2vec import run_node2vec
-from elliptic_fraud.splits import make_temporal_split
+from src.data import load_elliptic
+from src.features import build_feature_matrices, build_structural_features, fit_training_scaler
+from src.models.classical import run_classical_model
+from src.splits import make_temporal_split
 
 
 def run_experiment(
@@ -75,7 +72,12 @@ def run_experiment(
 
     if "node2vec" in models:
         print("\n=== node2vec_logistic ===")
+        from src.models.node2vec import run_node2vec   # lazy import
+        import torch
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        print(f"Used device for Node2Vec: {device}")
+
         model_rows, val_score, threshold = run_node2vec(
             edge_index=graph.edge_index,
             num_nodes=graph.num_nodes,
@@ -93,11 +95,28 @@ def run_experiment(
 
     if "graphsage" in models:
         print("\n=== graphsage ===")
+        from src.models.graphsage import run_graphsage   # lazy import
+        import torch
         # Proposal baseline: original 165 node features + graph structure.
         # Scaling uses only labeled early-train nodes for the validation run.
         early_x, _ = fit_training_scaler(graph.x, split.early_train)
         final_x, _ = fit_training_scaler(graph.x, split.final_train)
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        if str(device) == "cpu":
+            if not torch.backends.mps.is_available():
+                if not torch.backends.mps.is_built():
+                    print("MPS not available because the current PyTorch install was not "
+                          "built with MPS enabled.")
+                else:
+                    print("MPS not available because the current macOS version is not 15.0+ "
+                          "and/or you do not have an MPS-enabled device on this machine.")
+
+            else:
+                device = torch.device("mps")
+
+        print(f"Used device for GraphSAGE: {device}")
+
         model_rows, val_score, threshold, best_epoch = run_graphsage(
             validation_x=early_x,
             final_x=final_x,

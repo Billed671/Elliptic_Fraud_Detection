@@ -6,7 +6,7 @@ import networkx as nx
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from elliptic_fraud.data import EllipticGraph
+from src.data import EllipticGraph
 
 STRUCTURAL_FEATURE_NAMES = ("pagerank", "degree_centrality", "clustering_coefficient")
 

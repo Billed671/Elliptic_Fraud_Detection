@@ -11,8 +11,8 @@ from sklearn.metrics import average_precision_score
 from torch import nn
 from torch_geometric.nn import SAGEConv
 
-from elliptic_fraud.metrics import choose_f1_threshold, evaluate_by_horizon
-from elliptic_fraud.splits import TemporalSplit
+from src.metrics import choose_f1_threshold, evaluate_by_horizon
+from src.splits import TemporalSplit
 
 
 class GraphSAGE(nn.Module):
@@ -69,7 +69,7 @@ def _fit_graphsage(
             with torch.no_grad():
                 val_tensor = torch.as_tensor(validation_idx, dtype=torch.long, device=device)
                 probabilities = torch.sigmoid(model(x_device, edge_device)[val_tensor]).cpu().numpy()
-            truth = (y[validation_idx] == 1).astype(int)
+            truth = (y[validation_idx] == 1).int()
             score = float(average_precision_score(truth, probabilities))
             print(f"GraphSAGE epoch {epoch}/{epochs} - loss={loss.item():.4f} - val PR-AUC={score:.4f}")
             if score > best_score:
@@ -120,7 +120,7 @@ def run_graphsage(
         val_tensor = torch.as_tensor(split.validation, dtype=torch.long, device=device)
         val_logits = validation_model(validation_tensor.to(device), edge_tensor.to(device))
         val_prob = torch.sigmoid(val_logits[val_tensor]).cpu().numpy()
-    threshold = choose_f1_threshold((y[split.validation] == 1).astype(int), val_prob)
+    threshold = choose_f1_threshold((y[split.validation] == 1).int, val_prob)
 
     final_model, _, _ = _fit_graphsage(
         final_tensor,

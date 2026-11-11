@@ -10,9 +10,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import average_precision_score
 from xgboost import XGBClassifier
 
-from elliptic_fraud.features import fit_training_scaler
-from elliptic_fraud.metrics import choose_f1_threshold, evaluate_by_horizon
-from elliptic_fraud.splits import TemporalSplit
+from src.features import fit_training_scaler
+from src.metrics import choose_f1_threshold, evaluate_by_horizon
+from src.splits import TemporalSplit
+
+import os
+
+def _safe_n_jobs() -> int:
+    return max(1, min(8, os.cpu_count() or 1))
 
 
 def _make_estimator(name: str, y_train: np.ndarray, seed: int):
@@ -24,7 +29,7 @@ def _make_estimator(name: str, y_train: np.ndarray, seed: int):
             max_features="sqrt",
             min_samples_leaf=2,
             class_weight="balanced_subsample",
-            n_jobs=-1,
+            n_jobs=_safe_n_jobs(),
             random_state=seed,
         )
     if name == "xgboost":
@@ -40,7 +45,7 @@ def _make_estimator(name: str, y_train: np.ndarray, seed: int):
             objective="binary:logistic",
             eval_metric="aucpr",
             tree_method="hist",
-            n_jobs=-1,
+            n_jobs=_safe_n_jobs(),
             random_state=seed,
         )
     raise ValueError(f"Unknown classical estimator: {name}")
@@ -58,6 +63,8 @@ def run_classical_model(
     seed: int,
 ) -> tuple[list[dict], float, float]:
     """Validate on steps 30-34, refit on steps 1-34, evaluate steps 35-49."""
+    if not np.isfinite(features).all():
+        raise ValueError("Features contain NaN/Inf; fix before training.")
     early_x, early_scaler = fit_training_scaler(features, split.early_train)
     validation_model = _make_estimator(model_name, y[split.early_train], seed)
     validation_model.fit(early_x[split.early_train], (y[split.early_train] == 1).astype(int))

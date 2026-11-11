@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 
-from elliptic_fraud.experiment import run_experiment
+from src.experiment import run_experiment
 
 
 def build_parser() -> argparse.ArgumentParser:

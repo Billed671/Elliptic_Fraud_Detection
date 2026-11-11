@@ -60,7 +60,7 @@ elliptic-fraud-mvp/
 ├── .github/workflows/tests.yml
 ├── data/                         # downloaded data is gitignored
 ├── outputs/                      # generated models/reports are gitignored
-├── src/elliptic_fraud/
+├── src/
 │   ├── cli.py                     # command-line interface
 │   ├── data.py                    # PyG loading + time-step alignment
 │   ├── experiment.py               # end-to-end orchestration
@@ -95,6 +95,16 @@ pip install -e ".[dev]"
 ```
 
 PyTorch and PyG installation can depend on your OS, Python, CUDA, and PyTorch versions. If the default installation does not select a compatible build, first install the correct PyTorch build from the [official PyTorch selector](https://pytorch.org/get-started/locally/), then follow the [PyG installation guide](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html). Node2Vec additionally needs a compatible PyG random-walk sampling extension (`pyg-lib` or `torch-cluster`); see the PyG guide for the matching wheel.
+
+You may try executing the following commands in order to install `pyg-lib`
+
+```bash
+# Get to know your version of Torch and CUDA (if present)
+python -c "import torch; print('PyTorch:', torch.__version__); print('CUDA:', torch.version.cuda)"
+
+# Insert your Torch and CUDA version. If CUDA is None, then insert "cpu" instead of ${CUDA}
+pip install pyg-lib -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html
+```
 
 ## Run the experiment
 

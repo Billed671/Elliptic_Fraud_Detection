@@ -11,8 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score
 from sklearn.preprocessing import StandardScaler
 
-from elliptic_fraud.metrics import choose_f1_threshold, evaluate_by_horizon
-from elliptic_fraud.splits import TemporalSplit
+from src.metrics import choose_f1_threshold, evaluate_by_horizon
+from src.splits import TemporalSplit
 
 
 def learn_embeddings(
@@ -33,7 +33,6 @@ def learn_embeddings(
         from torch_geometric.nn import Node2Vec
     except ImportError as exc:  # pragma: no cover
         raise RuntimeError("Node2Vec requires torch-geometric.") from exc
-
     torch.manual_seed(seed)
     edges = torch.as_tensor(edge_index, dtype=torch.long)
     model = Node2Vec(
